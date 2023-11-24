@@ -13,8 +13,7 @@ if ($CMSNT->site('sign_view_product') == 0) {
     if (isset($_COOKIE["token"])) {
         $getUser = $CMSNT->get_row(" SELECT * FROM `users` WHERE `token` = '" . check_string($_COOKIE['token']) . "' ");
         if (!$getUser) {
-            // header("location: " . BASE_URL('client/logout'));
-            echo "test";
+            header("location: " . BASE_URL('client/logout'));
             exit();
         }
         $_SESSION['login'] = $getUser['token'];

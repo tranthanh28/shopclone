@@ -1,4 +1,3 @@
-<!-- Dev By CMSNT.CO | FB.COM/CMSNT.CO | ZALO.ME/0947838128 | MMO Solution -->
 <?php
 define("IN_SITE", true);
 

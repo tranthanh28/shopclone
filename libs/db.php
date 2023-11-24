@@ -1,13 +1,12 @@
 <?php
 session_save_path();
-session_start();
 if (!defined('IN_SITE')) {
     die('The Request Not Found');
 }
 include_once(__DIR__.'/../vendor/autoload.php');
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../');
 $dotenv->load();
-// session_start();
+session_start();
 
 class DB
 {

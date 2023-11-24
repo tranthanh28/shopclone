@@ -16,340 +16,376 @@ function display_invoice($status)
     } else if ($status == 'completed') {
         return '<span class="badge bg-success">Completed</span>';
     } else if ($status == 0) {
-        return '<p class="mb-0 text-warning font-weight-bold d-flex justify-content-start align-items-center">'.__('Đang chờ thanh toán').'</p>';
+        return '<p class="mb-0 text-warning font-weight-bold d-flex justify-content-start align-items-center">' . __('Đang chờ thanh toán') . '</p>';
     } else if ($status == 1) {
-        return '<p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">'.__('Đã thanh toán').'</p>';
+        return '<p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">' . __('Đã thanh toán') . '</p>';
     } else if ($status == 2) {
-        return '<p class="mb-0 text-danger font-weight-bold d-flex justify-content-start align-items-center">'.__('Huỷ bỏ').'</p>';
+        return '<p class="mb-0 text-danger font-weight-bold d-flex justify-content-start align-items-center">' . __('Huỷ bỏ') . '</p>';
     } else {
         return '<b style="color:yellow;">Khác</b>';
     }
 }
+
 function base_url_admin($url = '')
 {
-    $a = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER["HTTP_HOST"];
+    $a = "https://" . $_SERVER["HTTP_HOST"];
+    // $a = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER["HTTP_HOST"];
     if ($a == 'http://localhost') {
         $a = 'http://localhost/CMSNT.CO/SHOPCLONE6';
     }
-    return $a.'?module=admin&action='.$url;
+    return $a . '?module=admin&action=' . $url;
 }
 
-function getOrder_API_13($domain, $username, $password, $order_id){
+function getOrder_API_13($domain, $username, $password, $order_id)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => $domain.'api/Order/GetPurchasedAccounts?OrderId='.$order_id.'&Custom_UserId='.$username,
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 0,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => 'GET',
-      CURLOPT_HTTPHEADER => array(
-        'ApiKey: '.$password,
-        'Cookie: language=vi'
-      ),
+        CURLOPT_URL => $domain . 'api/Order/GetPurchasedAccounts?OrderId=' . $order_id . '&Custom_UserId=' . $username,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'ApiKey: ' . $password,
+            'Cookie: language=vi'
+        ),
     ));
-    
+
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 }
-function buy_API_13($domain, $username, $password, $id_api, $amount, $trans_id){
+
+function buy_API_13($domain, $username, $password, $id_api, $amount, $trans_id)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => $domain.'api/Service/Buy',
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 0,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => 'POST',
-      CURLOPT_POSTFIELDS =>'{
-      "serviceId": '.$id_api.',
-      "quantity": '.$amount.',
+        CURLOPT_URL => $domain . 'api/Service/Buy',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => '{
+      "serviceId": ' . $id_api . ',
+      "quantity": ' . $amount . ',
       "voucherCode": "<voucherCode>",
-      "custom_UserId": "'.$username.'",
-      "custom_OrderId": "'.$trans_id.'",
+      "custom_UserId": "' . $username . '",
+      "custom_OrderId": "' . $trans_id . '",
       "custom_ExtraData": "<custom_ExtraData>"
     }',
-      CURLOPT_HTTPHEADER => array(
-        'ApiKey: '.$password,
-        'Content-Type: application/json',
-        'Cookie: language=vi'
-      ),
-    ));
-    $response = curl_exec($curl);
-    curl_close($curl);
-    return $response;
-}
-function listProduct_API_13($domain, $password){
-    $curl = curl_init();
-    curl_setopt_array($curl, array(
-      CURLOPT_URL => $domain.'api/Service/GetAll',
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 0,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => 'GET',
-      CURLOPT_HTTPHEADER => array(
-        'ApiKey: '.$password,
-        'Cookie: language=vi'
-      ),
+        CURLOPT_HTTPHEADER => array(
+            'ApiKey: ' . $password,
+            'Content-Type: application/json',
+            'Cookie: language=vi'
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 }
 
-function getOrder_API_12($domain, $password, $order_id){
+function listProduct_API_13($domain, $password)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => $domain.'api/',
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 0,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => 'POST',
-      CURLOPT_POSTFIELDS =>'{
+        CURLOPT_URL => $domain . 'api/Service/GetAll',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'ApiKey: ' . $password,
+            'Cookie: language=vi'
+        ),
+    ));
+    $response = curl_exec($curl);
+    curl_close($curl);
+    return $response;
+}
+
+function getOrder_API_12($domain, $password, $order_id)
+{
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $domain . 'api/',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => '{
         "data": {
-            "order_id": '.$order_id.'
+            "order_id": ' . $order_id . '
         },
         "act": "Get-Order"
     }',
-      CURLOPT_HTTPHEADER => array(
-        'authorization: '.$password,
-        'Content-Type: application/json'
-      ),
+        CURLOPT_HTTPHEADER => array(
+            'authorization: ' . $password,
+            'Content-Type: application/json'
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
-    return $response; 
+    return $response;
 }
-function buy_API_12($domain, $password, $id_api, $amount){
+
+function buy_API_12($domain, $password, $id_api, $amount)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => $domain.'api/',
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 0,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => 'POST',
-      CURLOPT_POSTFIELDS =>'{
+        CURLOPT_URL => $domain . 'api/',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => '{
         "data": {
-            "quantity": '.$amount.',
-            "service_id": '.$id_api.'
+            "quantity": ' . $amount . ',
+            "service_id": ' . $id_api . '
         },
         "act": "Create-Order"
     }',
-      CURLOPT_HTTPHEADER => array(
-        'authorization: '.$password,
-        'Content-Type: application/json'
-      ),
+        CURLOPT_HTTPHEADER => array(
+            'authorization: ' . $password,
+            'Content-Type: application/json'
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
-    return $response; 
+    return $response;
 }
-function listProduct_API_12($domain, $password){
+
+function listProduct_API_12($domain, $password)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-    CURLOPT_URL => $domain.'api',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_POSTFIELDS =>'{
+        CURLOPT_URL => $domain . 'api',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => '{
         "act": "Get-Products"
     }',
-    CURLOPT_HTTPHEADER => array(
-        'authorization: '.$password,
-        'Content-Type: application/json'
-    ),
+        CURLOPT_HTTPHEADER => array(
+            'authorization: ' . $password,
+            'Content-Type: application/json'
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 
 }
-function balance_API_12($domain, $password){
+
+function balance_API_12($domain, $password)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-    CURLOPT_URL => $domain.'api',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_POSTFIELDS =>'{
+        CURLOPT_URL => $domain . 'api',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => '{
         "act": "Me"
     }',
-    CURLOPT_HTTPHEADER => array(
-        'authorization: '.$password,
-        'Content-Type: application/json'
-      ),
+        CURLOPT_HTTPHEADER => array(
+            'authorization: ' . $password,
+            'Content-Type: application/json'
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 }
+
 if (!function_exists('cal_days_in_month')) {
-    function cal_days_in_month($calendar, $month, $year) {
+    function cal_days_in_month($calendar, $month, $year)
+    {
         return date('t', mktime(0, 0, 0, $month, 1, $year));
     }
 }
-function is_valid_domain_name($domain_name){
+function is_valid_domain_name($domain_name)
+{
     return (preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $domain_name) && preg_match("/^.{1,253}$/", $domain_name) && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domain_name));
 }
-function display_domains($data){
+
+function display_domains($data)
+{
     if ($data == 1) {
-        $show = '<span class="badge bg-success">'.__('Hoạt Động').'</span>';
+        $show = '<span class="badge bg-success">' . __('Hoạt Động') . '</span>';
     } elseif ($data == 0) {
-        $show = '<span class="badge bg-warning">'.__('Đang Xây Dựng').'</span>';
+        $show = '<span class="badge bg-warning">' . __('Đang Xây Dựng') . '</span>';
     } elseif ($data == 2) {
-        $show = '<span class="badge bg-danger">'.__('Huỷ').'</span>';
+        $show = '<span class="badge bg-danger">' . __('Huỷ') . '</span>';
     }
     return $show;
 }
-function balance_API_10($domain, $password){
-    return curl_get($domain.'/user/balance?apikey='.$password);
+
+function balance_API_10($domain, $password)
+{
+    return curl_get($domain . '/user/balance?apikey=' . $password);
 }
-function buy_API_9($domain, $password, $dataPost){
+
+function buy_API_9($domain, $password, $dataPost)
+{
     $data = json_encode($dataPost);
     $curl = curl_init();
     curl_setopt_array($curl, array(
-    CURLOPT_URL => $domain.'v1/api/buy?api_key='.$password,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_POSTFIELDS => $data,
-    CURLOPT_HTTPHEADER => array(
-        'Content-Type: application/json'
-    ),
+        CURLOPT_URL => $domain . 'v1/api/buy?api_key=' . $password,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $data,
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json'
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 }
-function listProduct_API_9($domain, $password){
-    return curl_get($domain.'v1/api/categories?api_key='.$password);
-}
-function balance_API_9($domain, $password){
-    return curl_get($domain.'v1/api/me?api_key='.$password);
+
+function listProduct_API_9($domain, $password)
+{
+    return curl_get($domain . 'v1/api/categories?api_key=' . $password);
 }
 
-function buy_API_8($domain, $password, $dataPost){
+function balance_API_9($domain, $password)
+{
+    return curl_get($domain . 'v1/api/me?api_key=' . $password);
+}
+
+function buy_API_8($domain, $password, $dataPost)
+{
     $data = json_encode($dataPost);
-    $ch = curl_init($domain."api/v1/s3/buy");
+    $ch = curl_init($domain . "api/v1/s3/buy");
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS,$data);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-Type: application/json',
-        'Content-Length: ' . strlen($data),
-        'Authorization: Bearer '.$password
-    )
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data),
+            'Authorization: Bearer ' . $password
+        )
     );
     $result = curl_exec($ch);
     curl_close($ch);
     return $result;
 }
-function listProduct_API_8($domain, $password){
+
+function listProduct_API_8($domain, $password)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-    CURLOPT_URL => $domain.'api/v1/s3/services',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_HTTPHEADER => array(
-        'Authorization: Bearer '.$password
-    ),
-    ));
-    $response = curl_exec($curl);
-    curl_close($curl);
-    return $response;
-}
-function balance_API_8($domain, $password){
-    $curl = curl_init();
-    curl_setopt_array($curl, array(
-    CURLOPT_URL => $domain.'api/v1/s3/get_wallet',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_HTTPHEADER => array(
-        'Authorization: Bearer '.$password
-    ),
+        CURLOPT_URL => $domain . 'api/v1/s3/services',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer ' . $password
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 }
 
-function buy_API_7($domain, $token, $id_product, $amount){
-    
+function balance_API_8($domain, $password)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-    CURLOPT_URL => $domain.'api/san-pham/mua?category='.$id_product.'&quantity='.$amount,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_HTTPHEADER => array(
-        'Authorization: Bearer '.$token
-    ),
+        CURLOPT_URL => $domain . 'api/v1/s3/get_wallet',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer ' . $password
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 }
-function listProduct_API_7($domain, $password){
+
+function buy_API_7($domain, $token, $id_product, $amount)
+{
+
     $curl = curl_init();
     curl_setopt_array($curl, array(
-    CURLOPT_URL => $domain.'api/san-pham/tat-ca',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'GET',
-    CURLOPT_HTTPHEADER => array(
-        'Authorization: Bearer '.$password
-    ),
+        CURLOPT_URL => $domain . 'api/san-pham/mua?category=' . $id_product . '&quantity=' . $amount,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer ' . $token
+        ),
+    ));
+    $response = curl_exec($curl);
+    curl_close($curl);
+    return $response;
+}
+
+function listProduct_API_7($domain, $password)
+{
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $domain . 'api/san-pham/tat-ca',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer ' . $password
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 
 }
+
 function display_camp($status)
 {
     if ($status == 0) {
@@ -362,23 +398,27 @@ function display_camp($status)
         return '<b style="color:yellow;">Khác</b>';
     }
 }
-function balance_API_6($domain, $password){
-    return curl_get($domain.'/api.php?apikey='.$password.'&action=get-balance');
+
+function balance_API_6($domain, $password)
+{
+    return curl_get($domain . '/api.php?apikey=' . $password . '&action=get-balance');
 }
+
 function display_otp_service($status)
 {
     if ($status == 3) {
-        return '<span class="badge bg-danger">'.__('Dữ liệu đầu vào không hợp lệ').'</span>';
+        return '<span class="badge bg-danger">' . __('Dữ liệu đầu vào không hợp lệ') . '</span>';
     } elseif ($status == 0) {
-        return '<span class="badge bg-success">'.__('Hoàn tất').'</span>';
+        return '<span class="badge bg-success">' . __('Hoàn tất') . '</span>';
     } elseif ($status == 2) {
-        return '<span class="badge bg-danger">'.__('Hết hạn (hoàn tiền)').'</span>';
+        return '<span class="badge bg-danger">' . __('Hết hạn (hoàn tiền)') . '</span>';
     } elseif ($status == 1) {
-        return '<span class="badge bg-warning">'.__('Đang chờ').'</span>';
+        return '<span class="badge bg-warning">' . __('Đang chờ') . '</span>';
     } else {
-        return '<span class="badge bg-warning">'.__('Khác').'</span>';
+        return '<span class="badge bg-warning">' . __('Khác') . '</span>';
     }
 }
+
 function display_service_client($status)
 {
     if ($status == 'Pending') {
@@ -397,7 +437,9 @@ function display_service_client($status)
         return '<span class="badge bg-warning">Khác</span>';
     }
 }
-function setCurrency($id){
+
+function setCurrency($id)
+{
     global $CMSNT;
     if ($row = $CMSNT->get_row("SELECT * FROM `currencies` WHERE `id` = '$id' AND `display` = 1 ")) {
         $isSet = setcookie('currency', $row['id'], time() + (31536000 * 30), "/"); // 31536000 = 365 ngày
@@ -409,7 +451,9 @@ function setCurrency($id){
     }
     return false;
 }
-function getCurrency(){
+
+function getCurrency()
+{
     global $CMSNT;
     if (isset($_COOKIE['currency'])) {
         $currency = check_string($_COOKIE['currency']);
@@ -424,37 +468,45 @@ function getCurrency(){
     }
     return false;
 }
-function buy_API_DONGVANFB($domain, $apikey, $id_product, $amount){
-    return curl_get($domain."user/buy?apikey=$apikey&account_type=$id_product&quality=$amount&type=full");
+
+function buy_API_DONGVANFB($domain, $apikey, $id_product, $amount)
+{
+    return curl_get($domain . "user/buy?apikey=$apikey&account_type=$id_product&quality=$amount&type=full");
 }
-function balance_API_DONGVANFB($domain, $username, $apikey){
-    return curl_get($domain."user/balance?apikey=$apikey");
+
+function balance_API_DONGVANFB($domain, $username, $apikey)
+{
+    return curl_get($domain . "user/balance?apikey=$apikey");
 }
-function buy_API_4($domain, $token, $id_product, $amount){
+
+function buy_API_4($domain, $token, $id_product, $amount)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-    CURLOPT_URL => $domain.'v1/user/partnerbuy',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'POST',
-    CURLOPT_POSTFIELDS => array('amount' => $amount, 'categoryId' => $id_product),
-    CURLOPT_HTTPHEADER => array(
-        'authorization: '.$token
-    ),
+        CURLOPT_URL => $domain . 'v1/user/partnerbuy',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => array('amount' => $amount, 'categoryId' => $id_product),
+        CURLOPT_HTTPHEADER => array(
+            'authorization: ' . $token
+        ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 
 }
-function balance_API_4($domain, $username, $password){
+
+function balance_API_4($domain, $username, $password)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => $domain.'v1/user/login',
+        CURLOPT_URL => $domain . 'v1/user/login',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -464,17 +516,19 @@ function balance_API_4($domain, $username, $password){
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => array(
             'username' => $username,
-            'password'  => $password
+            'password' => $password
         ),
     ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 }
-function balance_API_1($domain, $token){
+
+function balance_API_1($domain, $token)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => $domain.'api/v1/balance',
+        CURLOPT_URL => $domain . 'api/v1/balance',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -488,10 +542,12 @@ function balance_API_1($domain, $token){
     curl_close($curl);
     return $response;
 }
-function buy_API_1($domain, $dataPost){
+
+function buy_API_1($domain, $dataPost)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => $domain."api/v1/buy",
+        CURLOPT_URL => $domain . "api/v1/buy",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
@@ -504,10 +560,12 @@ function buy_API_1($domain, $dataPost){
     curl_close($curl);
     return $response;
 }
-function order_API_1($domain, $token, $order_id){
+
+function order_API_1($domain, $token, $order_id)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => $domain.'api/v1/order',
+        CURLOPT_URL => $domain . 'api/v1/order',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -515,104 +573,115 @@ function order_API_1($domain, $token, $order_id){
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => array('api_key' => $token,'order_id' => $order_id),
-      ));
+        CURLOPT_POSTFIELDS => array('api_key' => $token, 'order_id' => $order_id),
+    ));
     $response = curl_exec($curl);
     curl_close($curl);
     return $response;
 }
 
-function addRef($user_id, $price, $note = ''){
+function addRef($user_id, $price, $note = '')
+{
     $CMSNT = new DB;
-    if($CMSNT->site('status_ref') != 1){
+    if ($CMSNT->site('status_ref') != 1) {
         return false;
     }
     $getUser = $CMSNT->get_row(" SELECT * FROM `users` WHERE `id` = '$user_id' ");
-    if($getUser['ref_id'] != 0){
+    if ($getUser['ref_id'] != 0) {
         $ck = $CMSNT->site('ck_ref');
-        if(getRowRealtime('users', $getUser['ref_id'], 'ref_ck') != 0){
+        if (getRowRealtime('users', $getUser['ref_id'], 'ref_ck') != 0) {
             $ck = getRowRealtime('users', $getUser['ref_id'], 'ref_ck');
         }
         $price = $price * $ck / 100;
-        $CMSNT->cong('users', 'ref_money', $price, " `id` = '".$getUser['ref_id']."' ");
-        $CMSNT->cong('users', 'ref_total_money', $price, " `id` = '".$getUser['ref_id']."' ");
-        $CMSNT->cong('users', 'ref_amount', $price, " `id` = '".$getUser['id']."' ");
+        $CMSNT->cong('users', 'ref_money', $price, " `id` = '" . $getUser['ref_id'] . "' ");
+        $CMSNT->cong('users', 'ref_total_money', $price, " `id` = '" . $getUser['ref_id'] . "' ");
+        $CMSNT->cong('users', 'ref_amount', $price, " `id` = '" . $getUser['id'] . "' ");
         $CMSNT->insert('log_ref', [
-            'user_id'       => $getUser['ref_id'],
-            'reason'        => $note,
-            'sotientruoc'   => getRowRealtime('users', $getUser['ref_id'], 'ref_money') - $price,
+            'user_id' => $getUser['ref_id'],
+            'reason' => $note,
+            'sotientruoc' => getRowRealtime('users', $getUser['ref_id'], 'ref_money') - $price,
             'sotienthaydoi' => $price,
             'sotienhientai' => getRowRealtime('users', $getUser['ref_id'], 'ref_money'),
-            'create_gettime'    => gettime()
+            'create_gettime' => gettime()
         ]);
         return true;
     }
     return false;
 }
-function sendMessAdmin($my_text){
+
+function sendMessAdmin($my_text)
+{
     $CMSNT = new DB;
-    if(checkAddon(112246) == true && $my_text != ''){
-        if($CMSNT->site('type_notification') == 'telegram'){
+    if (checkAddon(112246) == true && $my_text != '') {
+        if ($CMSNT->site('type_notification') == 'telegram') {
             return sendMessTelegram($my_text);
         }
         return false;
     }
     return false;
 }
-function sendMessTelegram($my_text, $token = '', $chat_id = ''){
+
+function sendMessTelegram($my_text, $token = '', $chat_id = '')
+{
     $CMSNT = new DB;
-    if($chat_id == ''){
+    if ($chat_id == '') {
         $chat_id = $CMSNT->site('chat_id_telegram');
     }
-    if($token == ''){
+    if ($token == '') {
         $token = $CMSNT->site('token_telegram');
     }
-    if($token != '' && $chat_id != ''){
+    if ($token != '' && $chat_id != '') {
         $curl = curl_init();
         curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.telegram.org/bot'.$token.'/sendMessage?chat_id='.$chat_id.'&text='.urlencode($my_text),
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 10,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'POST',
-      ));
+            CURLOPT_URL => 'https://api.telegram.org/bot' . $token . '/sendMessage?chat_id=' . $chat_id . '&text=' . urlencode($my_text),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+        ));
         $response = curl_exec($curl);
         curl_close($curl);
         return $response;
     }
     return false;
 }
-function getFlag($flag){
 
-    if(empty($flag)){
+function getFlag($flag)
+{
+
+    if (empty($flag)) {
         return '';
     }
-    return '<img width="30px;" src="https://flagicons.lipis.dev/flags/4x3/'.$flag.'.svg">';
+    return '<img width="30px;" src="https://flagicons.lipis.dev/flags/4x3/' . $flag . '.svg">';
 }
-function checkPromotion($amount){
+
+function checkPromotion($amount)
+{
     $CMSNT = new DB();
-    foreach($CMSNT->get_list("SELECT * FROM `promotions` WHERE `amount` <= '$amount' AND `status` = 1 ORDER by `amount` DESC ") as $promotion){
+    foreach ($CMSNT->get_list("SELECT * FROM `promotions` WHERE `amount` <= '$amount' AND `status` = 1 ORDER by `amount` DESC ") as $promotion) {
         $received = $amount + $amount * $promotion['discount'] / 100;
         return $received;
     }
     return $amount;
 }
+
 function claimSpin($user_id, $trans_id, $total_money)
 {
     $CMSNT = new DB();
     $USER = new users();
     if ($CMSNT->site('status_spin') == 1) {
         if ($total_money >= $CMSNT->site('condition_spin')) {
-            $USER->AddSpin($user_id, 1, 'Nhập 1 SPIN từ đơn hàng #'.$trans_id);
+            $USER->AddSpin($user_id, 1, 'Nhập 1 SPIN từ đơn hàng #' . $trans_id);
         }
     }
 }
+
 function getRandomWeightedElement(array $weightedValues)
 {
-    $Rand = mt_Rand(1, (int) array_sum($weightedValues));
+    $Rand = mt_Rand(1, (int)array_sum($weightedValues));
     foreach ($weightedValues as $key => $value) {
         $Rand -= $value;
         if ($Rand <= 0) {
@@ -620,6 +689,7 @@ function getRandomWeightedElement(array $weightedValues)
         }
     }
 }
+
 function checkFormatCard($type, $seri, $pin)
 {
     $seri = strlen($seri);
@@ -628,15 +698,15 @@ function checkFormatCard($type, $seri, $pin)
     if ($type == 'Viettel' || $type == "viettel" || $type == "VT" || $type == "VIETTEL") {
         if ($seri != 11 && $seri != 14) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài seri không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài seri không phù hợp'
             ];
             return $data;
         }
         if ($pin != 13 && $pin != 15) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài mã thẻ không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài mã thẻ không phù hợp'
             ];
             return $data;
         }
@@ -644,15 +714,15 @@ function checkFormatCard($type, $seri, $pin)
     if ($type == 'Mobifone' || $type == "mobifone" || $type == "Mobi" || $type == "MOBIFONE") {
         if ($seri != 15) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài seri không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài seri không phù hợp'
             ];
             return $data;
         }
         if ($pin != 12) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài mã thẻ không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài mã thẻ không phù hợp'
             ];
             return $data;
         }
@@ -660,15 +730,15 @@ function checkFormatCard($type, $seri, $pin)
     if ($type == 'VNMB' || $type == "Vnmb" || $type == "VNM" || $type == "VNMOBI") {
         if ($seri != 16) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài seri không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài seri không phù hợp'
             ];
             return $data;
         }
         if ($pin != 12) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài mã thẻ không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài mã thẻ không phù hợp'
             ];
             return $data;
         }
@@ -676,15 +746,15 @@ function checkFormatCard($type, $seri, $pin)
     if ($type == 'Vinaphone' || $type == "vinaphone" || $type == "Vina" || $type == "VINAPHONE") {
         if ($seri != 14) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài seri không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài seri không phù hợp'
             ];
             return $data;
         }
         if ($pin != 14) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài mã thẻ không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài mã thẻ không phù hợp'
             ];
             return $data;
         }
@@ -692,15 +762,15 @@ function checkFormatCard($type, $seri, $pin)
     if ($type == 'Garena' || $type == "garena") {
         if ($seri != 9) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài seri không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài seri không phù hợp'
             ];
             return $data;
         }
         if ($pin != 16) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài mã thẻ không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài mã thẻ không phù hợp'
             ];
             return $data;
         }
@@ -708,15 +778,15 @@ function checkFormatCard($type, $seri, $pin)
     if ($type == 'Zing' || $type == "zing" || $type == "ZING") {
         if ($seri != 12) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài seri không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài seri không phù hợp'
             ];
             return $data;
         }
         if ($pin != 9) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài mã thẻ không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài mã thẻ không phù hợp'
             ];
             return $data;
         }
@@ -724,34 +794,35 @@ function checkFormatCard($type, $seri, $pin)
     if ($type == 'Vcoin' || $type == "VTC") {
         if ($seri != 12) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài seri không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài seri không phù hợp'
             ];
             return $data;
         }
         if ($pin != 12) {
             $data = [
-                'status'    => false,
-                'msg'       => 'Độ dài mã thẻ không phù hợp'
+                'status' => false,
+                'msg' => 'Độ dài mã thẻ không phù hợp'
             ];
             return $data;
         }
     }
     $data = [
-        'status'    => true,
-        'msg'       => 'Success'
+        'status' => true,
+        'msg' => 'Success'
     ];
     return $data;
 }
+
 function checkCoupon($coupon, $user_id, $total_money)
 {
     global $CMSNT;
     // check coupon có tồn tại hay không
-    if ($coupon = $CMSNT->get_row("SELECT * FROM `coupons` WHERE `code` = '".check_string($coupon)."' AND `min` <= $total_money AND `max` >= $total_money AND `used` < `amount` ")) {
+    if ($coupon = $CMSNT->get_row("SELECT * FROM `coupons` WHERE `code` = '" . check_string($coupon) . "' AND `min` <= $total_money AND `max` >= $total_money AND `used` < `amount` ")) {
         // chek số lượng còn hay không
         if ($coupon['used'] < $coupon['amount']) {
             // check đã dùng hay chưa
-            if (!$CMSNT->get_row("SELECT * FROM `coupon_used` WHERE `coupon_id` = '".$coupon['id']."' AND `user_id` = '".$user_id."' ")) {
+            if (!$CMSNT->get_row("SELECT * FROM `coupon_used` WHERE `coupon_id` = '" . $coupon['id'] . "' AND `user_id` = '" . $user_id . "' ")) {
                 return $coupon['discount'];
             }
             return false;
@@ -760,12 +831,13 @@ function checkCoupon($coupon, $user_id, $total_money)
     }
     return false;
 }
+
 function active_sidebar_client($action)
 {
     foreach ($action as $row) {
         $row2 = explode('/', $row);
-        if(isset($row2[1])){
-            if(isset($_GET['shop']) && $_GET['shop'] == $row2[1]){
+        if (isset($row2[1])) {
+            if (isset($_GET['shop']) && $_GET['shop'] == $row2[1]) {
                 return 'active';
             }
         }
@@ -775,6 +847,7 @@ function active_sidebar_client($action)
     }
     return '';
 }
+
 function show_sidebar_client($action)
 {
     foreach ($action as $row) {
@@ -788,7 +861,7 @@ function show_sidebar_client($action)
 
 function parse_order_id($des, $MEMO_PREFIX)
 {
-    $re = '/'.$MEMO_PREFIX.'\d+/im';
+    $re = '/' . $MEMO_PREFIX . '\d+/im';
     preg_match_all($re, $des, $matches, PREG_SET_ORDER, 0);
     if (count($matches) == 0) {
         return null;
@@ -797,48 +870,51 @@ function parse_order_id($des, $MEMO_PREFIX)
     $orderCode = $matches[0][0];
     $prefixLength = strlen($MEMO_PREFIX);
     $orderId = intval(substr($orderCode, $prefixLength));
-    return $orderId ;
+    return $orderId;
 }
+
 function display_status_toyyibpay($status)
 {
     if ($status == 0) {
-        return '<b style="color:#db7e06;">'.__('Waiting').'</b>';
+        return '<b style="color:#db7e06;">' . __('Waiting') . '</b>';
     } elseif ($status == 'confirming') {
-        return '<b style="color:blue;">'.__('Confirming').'</b>';
+        return '<b style="color:blue;">' . __('Confirming') . '</b>';
     } elseif ($status == 'confirmed') {
-        return '<b style="color:green;">'.__('Confirmed').'</b>';
+        return '<b style="color:green;">' . __('Confirmed') . '</b>';
     } elseif ($status == 'refunded') {
-        return '<b style="color:pink;">'.__('Refunded').'</b>';
+        return '<b style="color:pink;">' . __('Refunded') . '</b>';
     } elseif ($status == 'expired') {
-        return '<b style="color:red;">'.__('Expired').'</b>';
+        return '<b style="color:red;">' . __('Expired') . '</b>';
     } elseif ($status == 2) {
-        return '<b style="color:red;">'.__('Failed').'</b>';
+        return '<b style="color:red;">' . __('Failed') . '</b>';
     } elseif ($status == 'partially_paid') {
-        return '<b style="color:green;">'.__('Partially Paid').'</b>';
+        return '<b style="color:green;">' . __('Partially Paid') . '</b>';
     } elseif ($status == 1) {
-        return '<b style="color:green;">'.__('Finished').'</b>';
+        return '<b style="color:green;">' . __('Finished') . '</b>';
     }
 }
+
 function display_status_crypto($status)
 {
     if ($status == 'waiting') {
-        return '<b style="color:#db7e06;">'.__('Waiting').'</b>';
+        return '<b style="color:#db7e06;">' . __('Waiting') . '</b>';
     } elseif ($status == 'confirming') {
-        return '<b style="color:blue;">'.__('Confirming').'</b>';
+        return '<b style="color:blue;">' . __('Confirming') . '</b>';
     } elseif ($status == 'confirmed') {
-        return '<b style="color:green;">'.__('Confirmed').'</b>';
+        return '<b style="color:green;">' . __('Confirmed') . '</b>';
     } elseif ($status == 'refunded') {
-        return '<b style="color:pink;">'.__('Refunded').'</b>';
+        return '<b style="color:pink;">' . __('Refunded') . '</b>';
     } elseif ($status == 'expired') {
-        return '<b style="color:red;">'.__('Expired').'</b>';
+        return '<b style="color:red;">' . __('Expired') . '</b>';
     } elseif ($status == 'failed') {
-        return '<b style="color:red;">'.__('Failed').'</b>';
+        return '<b style="color:red;">' . __('Failed') . '</b>';
     } elseif ($status == 'partially_paid') {
-        return '<b style="color:green;">'.__('Partially Paid').'</b>';
+        return '<b style="color:green;">' . __('Partially Paid') . '</b>';
     } elseif ($status == 'finished') {
-        return '<b style="color:green;">'.__('Finished').'</b>';
+        return '<b style="color:green;">' . __('Finished') . '</b>';
     }
 }
+
 function display_service($status)
 {
     if ($status == 0) {
@@ -851,18 +927,20 @@ function display_service($status)
         return '<b style="color:yellow;">Khác</b>';
     }
 }
+
 function display_card($status)
 {
     if ($status == 0) {
-        return '<p class="mb-0 text-info font-weight-bold d-flex justify-content-start align-items-center">'.__('Đang chờ xử lý').'</p>';
+        return '<p class="mb-0 text-info font-weight-bold d-flex justify-content-start align-items-center">' . __('Đang chờ xử lý') . '</p>';
     } elseif ($status == 1) {
-        return '<p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">'.__('Thành công').'</p>';
+        return '<p class="mb-0 text-success font-weight-bold d-flex justify-content-start align-items-center">' . __('Thành công') . '</p>';
     } elseif ($status == 2) {
-        return '<p class="mb-0 text-danger font-weight-bold d-flex justify-content-start align-items-center">'.__('Thất bại').'</p>';
+        return '<p class="mb-0 text-danger font-weight-bold d-flex justify-content-start align-items-center">' . __('Thất bại') . '</p>';
     } else {
         return '<b style="color:yellow;">Khác</b>';
     }
 }
+
 function display_invoice_text($status)
 {
     if ($status == 0) {
@@ -875,28 +953,33 @@ function display_invoice_text($status)
         return __('Khác');
     }
 }
+
 // lấy dữ liệu theo thời gian thực
 function getRowRealtime($table, $id, $row)
 {
     global $CMSNT;
-    return $CMSNT->get_row("SELECT `".$row."` FROM `$table` WHERE `id` = '$id' ")[$row];
+    return $CMSNT->get_row("SELECT `" . $row . "` FROM `$table` WHERE `id` = '$id' ")[$row];
 }
 
-function get_url(){
-    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'){
-        $url = "https://"; 
-    }else {
-        $url = "http://";
-    }         
-    $url.= $_SERVER['HTTP_HOST'];   
-    $url.= $_SERVER['REQUEST_URI'];    
-    return $url;  
+function get_url()
+{
+    // if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'){
+    //     $url = "https://";
+    // }else {
+    //     $url = "http://";
+    // }
+    $url = "https://";
+    $url .= $_SERVER['HTTP_HOST'];
+    $url .= $_SERVER['REQUEST_URI'];
+    return $url;
 }
+
 // Hàm tạo URL
 function base_url($url = '')
 {
     global $domain_block;
-    $a = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER["HTTP_HOST"];
+    // $a = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER["HTTP_HOST"];
+    $a = "https://" . $_SERVER["HTTP_HOST"];
     if ($a == 'http://localhost') {
         $a = 'http://localhost/CMSNT.CO/SHOPCLONE6';
     }
@@ -905,8 +988,9 @@ function base_url($url = '')
     //         return redirect(base64_decode('aHR0cHM6Ly93d3cuY21zbnQuY28v'));
     //     }
     // }
-    return $a.'/'.$url;
+    return $a . '/' . $url;
 }
+
 // mã hoá password
 function TypePassword($password)
 {
@@ -922,12 +1006,14 @@ function TypePassword($password)
     }
     return $password;
 }
+
 // lấy thông tin user theo id
 function getUser($id, $row)
 {
     $CMSNT = new DB();
     return $CMSNT->get_row("SELECT * FROM `users` WHERE `id` = '$id' ")[$row];
 }
+
 // check định dạng email
 function check_email($data)
 {
@@ -937,6 +1023,7 @@ function check_email($data)
         return false;
     }
 }
+
 // check định dạng số điện thoại
 function check_phone($data)
 {
@@ -946,6 +1033,7 @@ function check_phone($data)
         return false;
     }
 }
+
 // get datatime
 function gettime()
 {
@@ -957,46 +1045,49 @@ function format_currency2($amount)
     $CMSNT = new DB();
     $currency = $CMSNT->site('currency');
     if ($currency == 'USD') {
-        return '$'.number_format($amount / $CMSNT->site('usd_rate'), 2, '.', '');
+        return '$' . number_format($amount / $CMSNT->site('usd_rate'), 2, '.', '');
     } elseif ($currency == 'VND') {
-        return format_cash($amount).'đ';
+        return format_cash($amount) . 'đ';
     } elseif ($currency == 'THB') {
-        return format_cash($amount / 645.36).' THB';
+        return format_cash($amount / 645.36) . ' THB';
     }
-} 
-function format_currency($amount){
+}
+
+function format_currency($amount)
+{
     $CMSNT = new DB();
     if (isset($_COOKIE['currency'])) {
         $currency = check_string($_COOKIE['currency']);
         $rowCurrency = $CMSNT->get_row("SELECT * FROM `currencies` WHERE `id` = '$currency' AND `display` = 1 ");
         if ($rowCurrency) {
-            if($rowCurrency['seperator'] == 'comma'){
+            if ($rowCurrency['seperator'] == 'comma') {
                 $seperator = ',';
             }
-            if($rowCurrency['seperator'] == 'space'){
+            if ($rowCurrency['seperator'] == 'space') {
                 $seperator = '';
             }
-            if($rowCurrency['seperator'] == 'dot'){
+            if ($rowCurrency['seperator'] == 'dot') {
                 $seperator = '.';
-            } 
-            return $rowCurrency['symbol_left'].number_format($amount / $rowCurrency['rate'], $rowCurrency['decimal_currency'], '.', $seperator).$rowCurrency['symbol_right'];
+            }
+            return $rowCurrency['symbol_left'] . number_format($amount / $rowCurrency['rate'], $rowCurrency['decimal_currency'], '.', $seperator) . $rowCurrency['symbol_right'];
         }
     }
     $rowCurrency = $CMSNT->get_row("SELECT * FROM `currencies` WHERE `default_currency` = 1 ");
     if ($rowCurrency) {
-        if($rowCurrency['seperator'] == 'comma'){
+        if ($rowCurrency['seperator'] == 'comma') {
             $seperator = ',';
         }
-        if($rowCurrency['seperator'] == 'space'){
+        if ($rowCurrency['seperator'] == 'space') {
             $seperator = '';
         }
-        if($rowCurrency['seperator'] == 'dot'){
+        if ($rowCurrency['seperator'] == 'dot') {
             $seperator = '.';
         }
-        return $rowCurrency['symbol_left'].number_format($amount / $rowCurrency['rate'], $rowCurrency['decimal_currency'], '.', $seperator).$rowCurrency['symbol_right'];
+        return $rowCurrency['symbol_left'] . number_format($amount / $rowCurrency['rate'], $rowCurrency['decimal_currency'], '.', $seperator) . $rowCurrency['symbol_right'];
     }
-    return format_cash($amount).'đ';
+    return format_cash($amount) . 'đ';
 }
+
 //show ip
 function myip()
 {
@@ -1007,22 +1098,25 @@ function myip()
     } else {
         $ip_address = $_SERVER['REMOTE_ADDR'];
     }
-    if(isset(explode(',', $ip_address)[1])){
+    if (isset(explode(',', $ip_address)[1])) {
         return explode(',', $ip_address)[0];
     }
     return check_string($ip_address);
 }
+
 // lọc input
 function check_string($data)
 {
     return trim(htmlspecialchars(addslashes($data)));
     //return str_replace(array('<',"'",'>','?','/',"\\",'--','eval(','<php'),array('','','','','','','','',''),htmlspecialchars(addslashes(strip_tags($data))));
 }
+
 // định dạng tiền tệ
 function format_cash($number, $suffix = '')
 {
     return number_format($number, 0, ',', '.') . "{$suffix}";
 }
+
 function create_slug($string)
 {
     $search = array(
@@ -1064,16 +1158,20 @@ function create_slug($string)
     $string = strtolower($string);
     return $string;
 }
-function checkAddon($id_addon){
+
+function checkAddon($id_addon)
+{
     $CMSNT = new DB();
     $domain = str_replace('www.', '', $_SERVER['HTTP_HOST']);
-    if($CMSNT->get_row("SELECT * FROM `addons` WHERE `id` = '$id_addon' ")['purchase_key'] == md5($domain.'|'.$id_addon)){
+    if ($CMSNT->get_row("SELECT * FROM `addons` WHERE `id` = '$id_addon' ")['purchase_key'] == md5($domain . '|' . $id_addon)) {
         return true;
     }
     return false;
 }
+
 // curl get
-function curl_get($url){
+function curl_get($url)
+{
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -1084,7 +1182,9 @@ function curl_get($url){
     curl_close($ch);
     return $data;
 }
-function curl_dataPost($url, $dataPost){
+
+function curl_dataPost($url, $dataPost)
+{
     $curl = curl_init();
     curl_setopt_array($curl, array(
         CURLOPT_URL => $url,
@@ -1100,6 +1200,7 @@ function curl_dataPost($url, $dataPost){
     curl_close($curl);
     return $response;
 }
+
 function curl_post($url, $method, $postinfo, $cookie_file_path)
 {
     $ch = curl_init();
@@ -1121,7 +1222,7 @@ function curl_post($url, $method, $postinfo, $cookie_file_path)
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-    if ($method=='POST') {
+    if ($method == 'POST') {
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postinfo);
     }
@@ -1129,19 +1230,21 @@ function curl_post($url, $method, $postinfo, $cookie_file_path)
     curl_close($ch);
     return $html;
 }
+
 function convertTokenToCookie($token)
 {
     $html = json_decode(file_get_contents("https://api.facebook.com/method/auth.getSessionforApp?access_token=$token&format=json&new_app_id=350685531728&generate_session_cookies=1"), true);
-    $cookie = $html['session_cookies'][0]['name']."=".$html['session_cookies'][0]['value'].";".$html['session_cookies'][1]['name']."=".$html['session_cookies'][1]['value'].";".$html['session_cookies'][2]['name']."=".$html['session_cookies'][2]['value'].";".$html['session_cookies'][3]['name']."=".$html['session_cookies'][3]['value'];
+    $cookie = $html['session_cookies'][0]['name'] . "=" . $html['session_cookies'][0]['value'] . ";" . $html['session_cookies'][1]['name'] . "=" . $html['session_cookies'][1]['value'] . ";" . $html['session_cookies'][2]['name'] . "=" . $html['session_cookies'][2]['value'] . ";" . $html['session_cookies'][3]['name'] . "=" . $html['session_cookies'][3]['value'];
     return $cookie;
 }
+
 function senInboxCSM($cookie, $noiDungTinNhan, $idAnh, $idNguoiNhan)
 {
     //lấy id người gửi
     preg_match("/c_user=([0-9]+);/", $cookie, $idNguoiGui);
     $idNguoiGui = $idNguoiGui[1];
     //lấy dtsg
-    $html =  curl_post('https://m.facebook.com', 'GET', "", $cookie);
+    $html = curl_post('https://m.facebook.com', 'GET', "", $cookie);
     $re = "/<input type=\"hidden\" name=\"fb_dtsg\" value=\"(.*?)\" autocomplete=\"off\" \\/>/";
     preg_match($re, $html, $dtsg);
     $dtsg = $dtsg[1];
@@ -1154,15 +1257,15 @@ function senInboxCSM($cookie, $noiDungTinNhan, $idAnh, $idNguoiNhan)
         $re = "/tids=(.*?)\&/";
         preg_match($re, $html1, $tid);
         if (isset($tid[1])) {
-            $tid=urldecode($tid[1]);  //encode mã tids lại
+            $tid = urldecode($tid[1]);  //encode mã tids lại
             $data = array("fb_dtsg" => "$dtsg",
-            "body" => "$noiDungTinNhan",
-            "send" => "Gá»­i",
-            "photo_ids[$idanh]" => "$idAnh",
-            "tids" => "$tid",
-            "referrer" => "",
-            "ctype" => "",
-            "cver" => "legacy");
+                "body" => "$noiDungTinNhan",
+                "send" => "Gá»­i",
+                "photo_ids[$idanh]" => "$idAnh",
+                "tids" => "$tid",
+                "referrer" => "",
+                "ctype" => "",
+                "cver" => "legacy");
         } else {
             $data = array("fb_dtsg" => "$dtsg",
                 "body" => "$noiDungTinNhan",
@@ -1185,12 +1288,13 @@ function senInboxCSM($cookie, $noiDungTinNhan, $idAnh, $idNguoiNhan)
         }
     }
 }
- 
+
 // hàm tạo string random
 function random($string, $int)
 {
     return substr(str_shuffle($string), 0, $int);
 }
+
 // Hàm redirect
 function redirect($url)
 {
@@ -1208,6 +1312,7 @@ function active_sidebar($action)
     }
     return '';
 }
+
 function menuopen_sidebar($action)
 {
     foreach ($action as $row) {
@@ -1245,6 +1350,7 @@ function display_mark($data)
     }
     return $show;
 }
+
 // display banned
 function display_banned($banned)
 {
@@ -1254,6 +1360,7 @@ function display_banned($banned)
         return '<span class="badge badge-danger">Banned</span>';
     }
 }
+
 // display online
 function display_online($time)
 {
@@ -1263,11 +1370,13 @@ function display_online($time)
         return '<span class="badge badge-danger">Offline</span>';
     }
 }
+
 // hiển thị cờ quốc gia
 function display_flag($data)
 {
-    return '<img src="https://flagcdn.com/40x30/'.$data.'.png" >';
+    return '<img src="https://flagcdn.com/40x30/' . $data . '.png" >';
 }
+
 function display_live($data)
 {
     if ($data == 'LIVE') {
@@ -1277,6 +1386,7 @@ function display_live($data)
     }
     return $show;
 }
+
 function display_checklive($data)
 {
     if ($data == 1) {
@@ -1286,11 +1396,13 @@ function display_checklive($data)
     }
     return $show;
 }
-function card24h($telco, $amount, $serial, $pin, $trans_id){
+
+function card24h($telco, $amount, $serial, $pin, $trans_id)
+{
     global $CMSNT;
     $partner_id = $CMSNT->site('partner_id_card');
     $partner_key = $CMSNT->site('partner_key_card');
-    $url = base64_decode('aHR0cHM6Ly9jYXJkMjRoLmNvbS9jaGFyZ2luZ3dzL3YyP3NpZ249').md5($partner_key.$pin.$serial).'&telco='.$telco.'&code='.$pin.'&serial='.$serial.'&amount='.$amount.'&request_id='.$trans_id.'&partner_id='.$partner_id.'&command=charging';
+    $url = base64_decode('aHR0cHM6Ly9jYXJkMjRoLmNvbS9jaGFyZ2luZ3dzL3YyP3NpZ249') . md5($partner_key . $pin . $serial) . '&telco=' . $telco . '&code=' . $pin . '&serial=' . $serial . '&amount=' . $amount . '&request_id=' . $trans_id . '&partner_id=' . $partner_id . '&command=charging';
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -1298,16 +1410,19 @@ function card24h($telco, $amount, $serial, $pin, $trans_id){
     curl_close($ch);
     return json_decode($data, true);
 }
-function display_autofb($data){
+
+function display_autofb($data)
+{
     if ($data == 1) {
-        $show = '<span class="badge badge-success">'.__('Hoàn thành').'</span>';
+        $show = '<span class="badge badge-success">' . __('Hoàn thành') . '</span>';
     } elseif ($data == 0) {
-        $show = '<span class="badge badge-warning">'.__('Đang xử lý').'</span>';
+        $show = '<span class="badge badge-warning">' . __('Đang xử lý') . '</span>';
     } elseif ($data == 2) {
-        $show = '<span class="badge badge-danger">'.__('Huỷ').'</span>';
+        $show = '<span class="badge badge-danger">' . __('Huỷ') . '</span>';
     }
     return $show;
 }
+
 // hiển thị trạng thái hiển thị
 function display_status_product($data)
 {
@@ -1318,6 +1433,7 @@ function display_status_product($data)
     }
     return $show;
 }
+
 //display rank admin
 function display_role($data)
 {
@@ -1328,22 +1444,26 @@ function display_role($data)
     }
     return $show;
 }
+
 // Hàm show msg
 function msg_success($text, $url, $time)
 {
-    return die('<script type="text/javascript">swal("Thành Công", "'.$text.'","success");
-    setTimeout(function(){ location.href = "'.$url.'" },'.$time.');</script>');
+    return die('<script type="text/javascript">swal("Thành Công", "' . $text . '","success");
+    setTimeout(function(){ location.href = "' . $url . '" },' . $time . ');</script>');
 }
+
 function msg_error($text, $url, $time)
 {
-    return die('<script type="text/javascript">swal("Thất Bại", "'.$text.'","error");
-    setTimeout(function(){ location.href = "'.$url.'" },'.$time.');</script>');
+    return die('<script type="text/javascript">swal("Thất Bại", "' . $text . '","error");
+    setTimeout(function(){ location.href = "' . $url . '" },' . $time . ');</script>');
 }
+
 function msg_warning($text, $url, $time)
 {
-    return die('<script type="text/javascript">swal("Thông Báo", "'.$text.'","warning");
-    setTimeout(function(){ location.href = "'.$url.'" },'.$time.');</script>');
+    return die('<script type="text/javascript">swal("Thông Báo", "' . $text . '","warning");
+    setTimeout(function(){ location.href = "' . $url . '" },' . $time . ');</script>');
 }
+
 //paginationBoostrap
 function paginationBoostrap($url, $start, $total, $kmess)
 {
@@ -1362,7 +1482,7 @@ function paginationBoostrap($url, $start, $total, $kmess)
     if ($start > $kmess * ($neighbors + 1)) {
         $out[] = '<li class="page-item"><a class="page-link">...</a></li>';
     }
-    for ($nCont = $neighbors;$nCont >= 1;$nCont--) {
+    for ($nCont = $neighbors; $nCont >= 1; $nCont--) {
         if ($start >= $kmess * $nCont) {
             $tmpStart = $start - $kmess * $nCont;
             $out[] = sprintf($base_link, $tmpStart / $kmess + 1, $tmpStart / $kmess + 1);
@@ -1370,7 +1490,7 @@ function paginationBoostrap($url, $start, $total, $kmess)
     }
     $out[] = '<li class="page-item active"><a class="page-link">' . ($start / $kmess + 1) . '</a></li>';
     $tmpMaxPages = (int)(($total - 1) / $kmess) * $kmess;
-    for ($nCont = 1;$nCont <= $neighbors;$nCont++) {
+    for ($nCont = 1; $nCont <= $neighbors; $nCont++) {
         if ($start + $kmess * $nCont <= $tmpMaxPages) {
             $tmpStart = $start + $kmess * $nCont;
             $out[] = sprintf($base_link, $tmpStart / $kmess + 1, $tmpStart / $kmess + 1);
@@ -1390,115 +1510,107 @@ function paginationBoostrap($url, $start, $total, $kmess)
     $out[] = '</ul>';
     return implode('', $out);
 }
+
 function check_img($img)
 {
     $filename = $_FILES[$img]['name'];
     $ext = explode(".", $filename);
     $ext = end($ext);
-    $valid_ext = array("png","jpeg","jpg","PNG","JPEG","JPG","gif","GIF");
+    $valid_ext = array("png", "jpeg", "jpg", "PNG", "JPEG", "JPG", "gif", "GIF");
     if (in_array($ext, $valid_ext)) {
         return true;
     }
 }
+
 function timeAgo($time_ago)
 {
     $time_ago = empty($time_ago) ? 0 : $time_ago;
     if ($time_ago == 0) {
         return '--';
     }
-    $time_ago   = date("Y-m-d H:i:s", $time_ago);
-    $time_ago   = strtotime($time_ago);
-    $cur_time   = time();
-    $time_elapsed   = $cur_time - $time_ago;
-    $seconds    = $time_elapsed ;
-    $minutes    = round($time_elapsed / 60);
-    $hours      = round($time_elapsed / 3600);
-    $days       = round($time_elapsed / 86400);
-    $weeks      = round($time_elapsed / 604800);
-    $months     = round($time_elapsed / 2600640);
-    $years      = round($time_elapsed / 31207680);
+    $time_ago = date("Y-m-d H:i:s", $time_ago);
+    $time_ago = strtotime($time_ago);
+    $cur_time = time();
+    $time_elapsed = $cur_time - $time_ago;
+    $seconds = $time_elapsed;
+    $minutes = round($time_elapsed / 60);
+    $hours = round($time_elapsed / 3600);
+    $days = round($time_elapsed / 86400);
+    $weeks = round($time_elapsed / 604800);
+    $months = round($time_elapsed / 2600640);
+    $years = round($time_elapsed / 31207680);
     // Seconds
     if ($seconds <= 60) {
-        return "$seconds ".__('giây trước');
-    }
-    //Minutes
+        return "$seconds " . __('giây trước');
+    } //Minutes
     elseif ($minutes <= 60) {
-        return "$minutes ".__('phút trước');
-    }
-    //Hours
+        return "$minutes " . __('phút trước');
+    } //Hours
     elseif ($hours <= 24) {
-        return "$hours ".__('tiếng trước');
-    }
-    //Days
+        return "$hours " . __('tiếng trước');
+    } //Days
     elseif ($days <= 7) {
         if ($days == 1) {
             return __('Hôm qua');
         } else {
-            return "$days ".__('ngày trước');
+            return "$days " . __('ngày trước');
         }
-    }
-    //Weeks
+    } //Weeks
     elseif ($weeks <= 4.3) {
-        return "$weeks ".__('tuần trước');
-    }
-    //Months
-    elseif ($months <=12) {
-        return "$months ".__('tháng trước');
-    }
-    //Years
+        return "$weeks " . __('tuần trước');
+    } //Months
+    elseif ($months <= 12) {
+        return "$months " . __('tháng trước');
+    } //Years
     else {
-        return "$years ".__('năm trước');
+        return "$years " . __('năm trước');
     }
 }
 
 function timeAgo2($time_ago)
 {
-    $time_ago   = date("Y-m-d H:i:s", $time_ago);
-    $time_ago   = strtotime($time_ago);
-    $time_elapsed   = $time_ago;
-    $seconds    = $time_elapsed ;
-    $minutes    = round($time_elapsed / 60);
-    $hours      = round($time_elapsed / 3600);
-    $days       = round($time_elapsed / 86400);
-    $weeks      = round($time_elapsed / 604800);
-    $months     = round($time_elapsed / 2600640);
-    $years      = round($time_elapsed / 31207680);
+    $time_ago = date("Y-m-d H:i:s", $time_ago);
+    $time_ago = strtotime($time_ago);
+    $time_elapsed = $time_ago;
+    $seconds = $time_elapsed;
+    $minutes = round($time_elapsed / 60);
+    $hours = round($time_elapsed / 3600);
+    $days = round($time_elapsed / 86400);
+    $weeks = round($time_elapsed / 604800);
+    $months = round($time_elapsed / 2600640);
+    $years = round($time_elapsed / 31207680);
     // Seconds
     if ($seconds <= 60) {
         return "$seconds giây";
-    }
-    //Minutes
+    } //Minutes
     elseif ($minutes <= 60) {
         return "$minutes phút";
-    }
-    //Hours
+    } //Hours
     elseif ($hours <= 24) {
         return "$hours tiếng";
-    }
-    //Days
+    } //Days
     elseif ($days <= 7) {
         if ($days == 1) {
             return "$days ngày";
         } else {
             return "$days ngày";
         }
-    }
-    //Weeks
+    } //Weeks
     elseif ($weeks <= 4.3) {
         return "$weeks tuần";
-    }
-    //Months
-    elseif ($months <=12) {
+    } //Months
+    elseif ($months <= 12) {
         return "$months tháng";
-    }
-    //Years
+    } //Years
     else {
         return "$years năm";
     }
 }
-function CheckLiveClone($uid){
+
+function CheckLiveClone($uid)
+{
     //$json = json_decode(curl_get("https://graph.facebook.com/".$uid."/picture?redirect=false"), true);
-    $json = json_decode(curl_get("https://graph2.facebook.com/v3.3/".$uid."/picture?redirect=0"), true);
+    $json = json_decode(curl_get("https://graph2.facebook.com/v3.3/" . $uid . "/picture?redirect=0"), true);
     if ($json['data']) {
         if (empty($json['data']['height']) && empty($json['data']['width'])) {
             return 'DIE';
@@ -1509,17 +1621,18 @@ function CheckLiveClone($uid){
     // else if($json['error']){
     //     return 'DIE';
     // }
-    else{
+    else {
         return 'LIVE';
     }
 }
+
 function dirToArray($dir)
 {
     $result = array();
 
     $cdir = scandir($dir);
     foreach ($cdir as $key => $value) {
-        if (!in_array($value, array(".",".."))) {
+        if (!in_array($value, array(".", ".."))) {
             if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
                 $result[$value] = dirToArray($dir . DIRECTORY_SEPARATOR . $value);
             } else {
@@ -1531,78 +1644,80 @@ function dirToArray($dir)
     return $result;
 }
 
- function realFileSize($path)
- {
-     if (!file_exists($path)) {
-         return false;
-     }
+function realFileSize($path)
+{
+    if (!file_exists($path)) {
+        return false;
+    }
 
-     $size = filesize($path);
+    $size = filesize($path);
 
-     if (!($file = fopen($path, 'rb'))) {
-         return false;
-     }
+    if (!($file = fopen($path, 'rb'))) {
+        return false;
+    }
 
-     if ($size >= 0) {//Check if it really is a small file (< 2 GB)
+    if ($size >= 0) {//Check if it really is a small file (< 2 GB)
         if (fseek($file, 0, SEEK_END) === 0) {//It really is a small file
             fclose($file);
             return $size;
         }
-     }
+    }
 
-     //Quickly jump the first 2 GB with fseek. After that fseek is not working on 32 bit php (it uses int internally)
-     $size = PHP_INT_MAX - 1;
-     if (fseek($file, PHP_INT_MAX - 1) !== 0) {
-         fclose($file);
-         return false;
-     }
+    //Quickly jump the first 2 GB with fseek. After that fseek is not working on 32 bit php (it uses int internally)
+    $size = PHP_INT_MAX - 1;
+    if (fseek($file, PHP_INT_MAX - 1) !== 0) {
+        fclose($file);
+        return false;
+    }
 
-     $length = 1024 * 1024;
-     while (!feof($file)) {//Read the file until end
-         $read = fread($file, $length);
-         $size = bcadd($size, $length);
-     }
-     $size = bcsub($size, $length);
-     $size = bcadd($size, strlen($read));
+    $length = 1024 * 1024;
+    while (!feof($file)) {//Read the file until end
+        $read = fread($file, $length);
+        $size = bcadd($size, $length);
+    }
+    $size = bcsub($size, $length);
+    $size = bcadd($size, strlen($read));
 
-     fclose($file);
-     return $size;
- }
+    fclose($file);
+    return $size;
+}
+
 function FileSizeConvert($bytes)
 {
     $bytes = floatval($bytes);
     $arBytes = array(
-            0 => array(
-                "UNIT" => "TB",
-                "VALUE" => pow(1024, 4)
-            ),
-            1 => array(
-                "UNIT" => "GB",
-                "VALUE" => pow(1024, 3)
-            ),
-            2 => array(
-                "UNIT" => "MB",
-                "VALUE" => pow(1024, 2)
-            ),
-            3 => array(
-                "UNIT" => "KB",
-                "VALUE" => 1024
-            ),
-            4 => array(
-                "UNIT" => "B",
-                "VALUE" => 1
-            ),
-        );
+        0 => array(
+            "UNIT" => "TB",
+            "VALUE" => pow(1024, 4)
+        ),
+        1 => array(
+            "UNIT" => "GB",
+            "VALUE" => pow(1024, 3)
+        ),
+        2 => array(
+            "UNIT" => "MB",
+            "VALUE" => pow(1024, 2)
+        ),
+        3 => array(
+            "UNIT" => "KB",
+            "VALUE" => 1024
+        ),
+        4 => array(
+            "UNIT" => "B",
+            "VALUE" => 1
+        ),
+    );
 
     foreach ($arBytes as $arItem) {
         if ($bytes >= $arItem["VALUE"]) {
             $result = $bytes / $arItem["VALUE"];
-            $result = str_replace(".", ",", strval(round($result, 2)))." ".$arItem["UNIT"];
+            $result = str_replace(".", ",", strval(round($result, 2))) . " " . $arItem["UNIT"];
             break;
         }
     }
     return $result;
 }
+
 function GetCorrectMTime($filePath)
 {
     $time = filemtime($filePath);
@@ -1622,12 +1737,13 @@ function GetCorrectMTime($filePath)
 
     return ($time + $adjustment);
 }
+
 function DownloadFile($file)
 { // $file = include path
     if (file_exists($file)) {
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename='.basename($file));
+        header('Content-Disposition: attachment; filename=' . basename($file));
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -1639,44 +1755,45 @@ function DownloadFile($file)
         exit;
     }
 }
+
 function getFileType(string $url): string
 {
-    $filename=explode('.', $url);
-    $extension=end($filename);
+    $filename = explode('.', $url);
+    $extension = end($filename);
 
     switch ($extension) {
         case 'pdf':
-            $type=$extension;
+            $type = $extension;
             break;
         case 'docx':
         case 'doc':
-            $type='word';
+            $type = 'word';
             break;
         case 'xls':
         case 'xlsx':
-            $type='excel';
+            $type = 'excel';
             break;
         case 'mp3':
         case 'ogg':
         case 'wav':
-            $type='audio';
+            $type = 'audio';
             break;
         case 'mp4':
         case 'mov':
-            $type='video';
+            $type = 'video';
             break;
         case 'zip':
         case '7z':
         case 'rar':
-            $type='archive';
+            $type = 'archive';
             break;
         case 'jpg':
         case 'jpeg':
         case 'png':
-            $type='image';
+            $type = 'image';
             break;
         default:
-            $type='alt';
+            $type = 'alt';
     }
 
     return $type;
@@ -1684,7 +1801,7 @@ function getFileType(string $url): string
 
 function getLocation($ip)
 {
-    if($ip = '::1'){
+    if ($ip = '::1') {
         $data = [
             'country' => 'VN'
         ];
@@ -1694,6 +1811,7 @@ function getLocation($ip)
     $location = json_decode(file_get_contents($url), true);
     return $location;
 }
+
 function pagination($url, $start, $total, $kmess)
 {
     $out[] = ' <div class="paging_simple_numbers"><ul class="pagination">';
@@ -1704,20 +1822,19 @@ function pagination($url, $start, $total, $kmess)
     $out[] = $start == 0 ? '' : sprintf($base_link, $start / $kmess, 'Previous');
     if ($start > $kmess * $neighbors) $out[] = sprintf($base_link, 1, '1');
     if ($start > $kmess * ($neighbors + 1)) $out[] = '<li class="paginate_button page-item previous disabled"><a class="page-link">...</a></li>';
-    for ($nCont = $neighbors;$nCont >= 1;$nCont--) if ($start >= $kmess * $nCont) {
+    for ($nCont = $neighbors; $nCont >= 1; $nCont--) if ($start >= $kmess * $nCont) {
         $tmpStart = $start - $kmess * $nCont;
         $out[] = sprintf($base_link, $tmpStart / $kmess + 1, $tmpStart / $kmess + 1);
     }
     $out[] = '<li class="paginate_button page-item previous active"><a class="page-link">' . ($start / $kmess + 1) . '</a></li>';
     $tmpMaxPages = (int)(($total - 1) / $kmess) * $kmess;
-    for ($nCont = 1;$nCont <= $neighbors;$nCont++) if ($start + $kmess * $nCont <= $tmpMaxPages) {
+    for ($nCont = 1; $nCont <= $neighbors; $nCont++) if ($start + $kmess * $nCont <= $tmpMaxPages) {
         $tmpStart = $start + $kmess * $nCont;
         $out[] = sprintf($base_link, $tmpStart / $kmess + 1, $tmpStart / $kmess + 1);
     }
     if ($start + $kmess * ($neighbors + 1) < $tmpMaxPages) $out[] = '<li class="paginate_button page-item previous disabled"><a class="page-link">...</a></li>';
     if ($start + $kmess * $neighbors < $tmpMaxPages) $out[] = sprintf($base_link, $tmpMaxPages / $kmess + 1, $tmpMaxPages / $kmess + 1);
-    if ($start + $kmess < $total)
-    {
+    if ($start + $kmess < $total) {
         $display_page = ($start + $kmess) > $total ? $total : ($start / $kmess + 2);
         $out[] = sprintf($base_link, $display_page, 'Next');
     }
