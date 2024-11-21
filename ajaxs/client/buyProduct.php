@@ -126,6 +126,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $isUpdateAccount = 1;
                 foreach($data['data']['lists'] as $account){
                     // THÊM TÀI KHOẢN TỪ API VÀO HỆ THỐNG
+
+                    $product_area = "pl";
+                    $dataAccount = explode("|",$account['account']);
+                    $clone_id = check_string($dataAccount[0]);
+
                     $CMSNT->insert("accounts", [
                         'seller'        => $row['user_id'],
                         'buyer'         => $getUser['id'],
@@ -134,12 +139,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         'account'       => $account['account'],
                         'status'        => 'LIVE',
                         'update_date'   => gettime(),
+                        'product_area'    => $product_area,
+                        'clone_id'       => $clone_id,
                         'create_date'   => gettime(),
                         'product_id'    =>  $row['id']
                     ]);
                 }
             }
-
 
             // API 1
             if($row_connect_api['type'] == 'API_1'){

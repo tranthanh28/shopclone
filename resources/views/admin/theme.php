@@ -17,7 +17,7 @@ $body['footer'] = '
 $(function () {
   bsCustomFileInput.init();
 });
-</script> 
+</script>
 ';
 require_once(__DIR__.'/../../../models/is_admin.php');
 require_once(__DIR__.'/header.php');
@@ -25,7 +25,7 @@ require_once(__DIR__.'/sidebar.php');
 require_once(__DIR__.'/nav.php');
 require_once(__DIR__.'/../../../models/is_license.php');
 ?>
- 
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
